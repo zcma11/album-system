@@ -11,7 +11,7 @@ myAxios.interceptors.request.use(config => {
 
   if (token) {
     // 如果有就带过去
-    config.headers.authorization = token
+    config.headers.Authorization = 'Bearer ' + token
   }
 
   return config
@@ -20,9 +20,11 @@ myAxios.interceptors.request.use(config => {
 myAxios.interceptors.response.use(
   res => res.data,
   err => {
-    console.log(err)
+    // console.log(err)
     if (err.response.status === 401) {
-      Vue.prototype.$alert('请重新登录', 'login', {
+      localStorage.removeItem('token')
+      Vue.prototype.$message.error('账号异常')
+      Vue.prototype.$alert('请重新登录', '提示', {
         confirmButtonText: '确定',
         callback: () => {
           router.push({
@@ -30,10 +32,8 @@ myAxios.interceptors.response.use(
           })
         }
       })
-      router.push({
-        name: 'Login'
-      })
     }
+    return {}
   }
 )
 

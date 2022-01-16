@@ -33,12 +33,19 @@ export default {
   },
   methods: {
     signIn() {
-      login({ username: this.username, password: this.password }).then(res => {
-        console.log(res)
-        if (res.status === 0) {
-          this.$message.error('登录失败')
-        }
-      })
+      login({ username: this.username, password: this.password })
+        .then(res => {
+          console.log(res)
+          if (res.status === 0) {
+            return this.$message.error('登录失败')
+          }
+          this.$store.commit('setToken', res.data.token)
+          this.$message.success('登录成功')
+          this.$router.push({
+            name: 'Home'
+          })
+        })
+        .catch(e => console.log(e))
     }
   }
 }
@@ -46,13 +53,18 @@ export default {
 
 <style scoped>
 .loginContainer {
-  margin: 0 auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 600px;
   text-align: center;
-  padding-top: 20px;
-  padding-bottom: 50px;
-  border: 1px solid;
 }
+
+h1 {
+  margin-bottom: 20px;
+}
+
 .loginContainer input {
   margin-bottom: 20px;
 }
